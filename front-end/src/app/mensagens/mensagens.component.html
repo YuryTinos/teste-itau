@@ -1,0 +1,16 @@
+<div *ngIf="mensagemService.mensagens.length">
+
+  <div [className]="mensagem.getAlert()"
+       role="alert"
+       *ngFor='let mensagem of mensagemService.mensagens'>
+    {{mensagem.texto}}
+    <button type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+            (click)="mensagemService.clear()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+</div>

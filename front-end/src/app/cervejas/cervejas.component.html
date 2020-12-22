@@ -1,0 +1,35 @@
+<div class="row mt-5">
+  <div class="col-sm-12">
+    <form class="input-group mb-3"
+          [formGroup]="formularioCerveja"
+          (ngSubmit)="onAdicionar(formularioCerveja.value)">
+      <input type="text"
+             placeholder="Skol"
+             class="form-control mr-2"
+             aria-label="Nome da Cerveja"
+             aria-describedby="button-addon"
+             formControlName="nome">
+      <button class="btn btn-outline-primary" type="submit" id="button-addon">Adicionar Cerveja</button>
+    </form>
+  </div>
+</div>
+
+<app-mensagens></app-mensagens>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="list-group" *ngIf="cervejas.length > 0">
+      <a *ngFor="let cerveja of cervejas"
+          class="list-group-item d-flex justify-content-between align-items-center">
+        <p class="p-0 m-0 flex-grow-1">{{cerveja.nome}}</p>
+        <span class="badge badge-primary badge-pill">
+          {{cerveja.pontuacao}}
+          <a role="button" (click)="onVotar(cerveja)">^</a>
+        </span>
+        <span class="ml-2 badge badge-danger badge-pill">
+          <a role="button" (click)="onDeletar(cerveja)">X</a>
+        </span>
+      </a>
+    </div>
+  </div>
+</div>

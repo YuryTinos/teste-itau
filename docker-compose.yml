@@ -1,0 +1,48 @@
+version: '2.1'
+
+services:
+    localstack:
+        container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
+        image: localstack/localstack
+        hostname: localstack
+        ports:
+            - "4566:4566"
+            - "4571:4571"
+            - "8080:8090"
+        environment:
+            - SERVICES=${SERVICES- }
+            - DEBUG=1
+            - DATA_DIR=${DATA_DIR- }
+            - PORT_WEB_UI=${PORT_WEB_UI- }
+            - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR- }
+            - KINESIS_ERROR_PROBABILITY=${KINESIS_ERROR_PROBABILITY- }
+            - DOCKER_HOST=unix:///var/run/docker.sock
+            - HOST_TMP_FOLDER=${TMPDIR}
+            - DEFAULT_REGION=us-east-1
+        volumes:
+            - "./infra/fake-credentials:/root/.aws/credentials"
+            - "./infra/fake-config:/root/.aws/config"
+            - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
+            - "/var/run/docker.sock:/var/run/docker.sock"
+
+    back-end:
+        stop_signal: SIGKILL
+        working_dir: /root
+        image: maven:3.6.3-jdk-11
+        command: mvn clean package
+        environment:
+            - AWS_ACCESS_KEY_ID=teste
+            - AWS_SECRET_ACCESS_KEY=teste
+        volumes:
+            - "./back-end:/root/"
+
+    front-end:
+        stop_signal: SIGKILL
+        working_dir: /home/node/app
+        image: node:12.18-alpine
+        command: npm run rebuild
+        environment:
+            - AWS_ACCESS_KEY_ID=teste
+            - AWS_SECRET_ACCESS_KEY=teste
+        volumes:
+            - "./front-end:/home/node/app"
